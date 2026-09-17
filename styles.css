@@ -1,0 +1,101 @@
+:root {
+  --primary-color: #2589C9;
+  --secondary-color: #063E5F;
+  --accent-color: #b3d2e6;
+  --text-color: #0000FF;
+  --white-color: #FFFFFF;
+}
+
+
+
+/* Reset/Normalize */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Configuración base */
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+h1,h2,h3 {
+  color: var(--primary-color);
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  background-color: var(--white-color);
+  margin-bottom: 2rem;
+}
+
+#events{
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.events-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Card */
+.card {
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap:.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  width: 20rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+  .item-2x {
+    flex-grow: 2;
+  }
+  
+  .item-4x {
+    flex-grow: 4;
+  }
+
+
+.btn {
+  padding: .5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  opacity: 0.8;
+}
+
+.btn--primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn--secondary {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.btn--accent {
+  background-color: var(--accent-color);
+  color: black;
+}
