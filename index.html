@@ -16,141 +16,111 @@
         <header class="header">    
             <h1>Cartelera de eventos</h1>
             <nav>
-                <ul>
+                <ul class="nav-list">
                     <li><a href="#home">Inicio</a></li>
                     <li><a href="#events">Eventos</a></li>
                     <li><a href="#aboutus">Acerca de nosotros</a></li>
                 </ul>
             </nav>
         </header>
-        <main id="home">
-            <section id="events">
-                <h2>Proximos eventos</h2>
-                <div class="events-container">
-                    <article class="card">
-                        <h3>Concierto de jazz</h3>
-                        <img src="img/jazz.jpg" width="285" height="200" alt="Fila de saxofonistas tocando en un concierto">
-                        <p>Concierto de jazz en vivo</p>
-                        <button class="btn btn--primary">Comprar Ticket</button>
-                    </article>
-                    <article class="card">
-                        <h3>Concierto de jazz</h3>
-                        <img src="img/jazz.jpg" width="285" height="200" alt="Fila de saxofonistas tocando en un concierto">
-                        <p>Concierto de jazz en vivo</p>
-                        <button class="btn btn--primary">Comprar Ticket</button>
-                    </article>
-                    <article class="card">
-                        <h3>Concierto de jazz</h3>
-                        <img src="img/jazz.jpg" width="285" height="200" alt="Fila de saxofonistas tocando en un concierto">
-                        <p>Concierto de jazz en vivo</p>
-                        <button class="btn btn--primary">Comprar Ticket</button>
-                    </article>
-                    <article class="card">
-                        <h3>Concierto de jazz</h3>
-                        <img src="img/jazz.jpg" width="285" height="200" alt="Fila de saxofonistas tocando en un concierto">
-                        <p>Concierto de jazz en vivo</p>
-                        <button class="btn btn--primary">Comprar Ticket</button>
-                    </article>
-                </div>
-            </section>
-            <section id="prices">
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <th>Evento</th>
-                            <th>Precio unitario</th>
-                            <th colspan="2">Horarios</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td rowspan="2">Concierto Jazz</td>
-                            <td>$150000</td>
-                            <td>Lunes - Viernes 8:00 - 20:00</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-            <section id="aboutus">
-                <h2>Acerca de nosotros</h2>
-                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quod odit deserunt officiis sint veritatis, eveniet eligendi adipisci nihil atque, earum, ipsum totam rerum maiores repudiandae autem accusantium fugiat dicta. Explicabo.</p>
-            </section>
-            <section id="contact">
-                <h2 class="title--blue">Contacto</h2>
-                <form action="/test"  method="post" >
-                    <fieldset>
-                        <legend>Datos basicos</legend>
-                        <label for="nombre">Nombre</label>
-                        <input type="text" id="nombre" name="nombre" required><br>
-                        <label for="apellido">Apellidos</label>
-                        <input type="text" id="apellido" name="apellido" pattern="[A-Z]{3}-[0-9]{3}" required><br>
-                        <label for="telefono">Cel</label>
-                        <input type="tel" id="telefono" name="telefono"><br>
-                        <label for="email">Correo electronico</label>
-                        <input type="email" id="email" name="email"><br>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Otros datos</legend>
-                        <label for="pass">Pass</label>
-                        <input type="password" id="pass" name="pass"><br>
-                        <label for="date">Fecha</label>
-                        <input type="date" id="date" name="date"><br>
-                        <label for="comentario">Comentario</label>
-                        <textarea rows="5" cols="10" id="comentario" name="comentario" placeholder="Comentario"></textarea><br>
-                        <label for="edad">Edad</label>
-                        <input type="number" name="edad" id="edad" min="18" max="65">
+        <div class="layout">
+            <main id="home">
+                <section id="events">
+                    <h2>Proximos eventos</h2>
+                    <div class="events-container">
+                        <article class="card">
+                            <img class="card-image" src="img/jazz.jpg" alt="Fila de saxofonistas tocando en un concierto">
+                            <div class="card-body">
+                                <h3>Concierto de jazz</h3>
+                                <p>Concierto de jazz en vivo</p>
+                            </div>
+                            <div class="card-actions">
+                                <span class="card-price">$50.000</span>
+                                <button class="btn btn--accent">Comprar Ticket</button>
+                            </div>
+                        </article>
+                        <article class="card">
+                            <img class="card-image" src="img/jazz.jpg" alt="Fila de saxofonistas tocando en un concierto">
+                            <div class="card-body">
+                                <h3>Concierto de jazz</h3>
+                                <p>Concierto de jazz en vivo</p>
+                            </div>
+                            <div class="card-actions">
+                                <span class="card-price">$50.000</span>
+                                <button class="btn btn--accent">Comprar Ticket</button>
+                            </div>
+                        </article>
+                        <article class="card">
+                            <img class="card-image" src="img/jazz.jpg" alt="Fila de saxofonistas tocando en un concierto">
+                            <div class="card-body">
+                                <h3>Concierto de jazz</h3>
+                                <p>Concierto de jazz en vivo</p>
+                            </div>
+                            <div class="card-actions">
+                                <span class="card-price">$50.000</span>
+                                <button class="btn btn--accent">Comprar Ticket</button>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+                <section id="aboutus">
+                    <h2>Acerca de nosotros</h2>
+                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quod odit deserunt officiis sint veritatis, eveniet eligendi adipisci nihil atque, earum, ipsum totam rerum maiores repudiandae autem accusantium fugiat dicta. Explicabo.</p>
+                </section>
+                <section id="contact">
+                    <h2 class="title--blue">Contacto</h2>
+                    <form class="form" action="/test"  method="post" >
+                        <fieldset class="form-group">
+                            <legend>Datos basicos</legend>
+                            <div class="form-field">
+                                <label for="nombre">Nombre</label>
+                                <input type="text" id="nombre" name="nombre" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="apellido">Apellidos</label>
+                                <input type="text" id="apellido" name="apellido" pattern="[A-Z]{3}-[0-9]{3}" required><br>
+                            </div>
+                            <div class="form-field">
+                                <label for="telefono">Cel</label>
+                                <input type="tel" id="telefono" name="telefono">
+                            </div>
+                            <div class="form-field">
+                                <label for="email">Correo electronico</label>
+                                <input type="email" id="email" name="email">
+                            </div>
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <legend>Otros datos</legend>
+                            <div class="form-field">
+                                <label for="pass">Pass</label>
+                                <input type="password" id="pass" name="pass"><br>
+                            </div>
+                            <div class="form-field">
+                                <label for="date">Fecha</label>
+                                <input type="date" id="date" name="date"><br>
+                            </div>
+                            <div class="form-field">
+                                <label for="comentario">Comentario</label>
+                                <textarea rows="5" cols="10" id="comentario" name="comentario" placeholder="Comentario"></textarea><br>
+                            </div>
+                            <div class="form-field">
+                                <label for="edad">Edad</label>
+                                <input type="number" name="edad" id="edad" min="18" max="65">
+                        </fieldset>
 
-                        <input list="frutas">
-                        <datalist id="frutas">
-                            <option value="Manzana">
-                            <option value="Banana">
-                            <option value="Cereza">
-                        </datalist>
-                    </fieldset>
-
-
-                    <label for="province">Provincia:</label>
-                    <select id="province" name="province">
-                        <option value="">-- Selecciona --</option>
-                        <option value="madrid">Madrid</option>
-                        <option value="barcelona">Barcelona</option>
-                        <optgroup label="Andalucía">
-                            <option>Sevilla</option>
-                            <option>Málaga</option>
-                        </optgroup>
-                    </select>
-
-                    <select id="languages" name="languages" multiple size="3">
-                        <option value="es">Español</option>
-                        <option value="en">Inglés</option>
-                        <option value="fr">Francés</option>
-                    </select>
-
-
-        
-                    <button class="btn btn--secondary"  type="submit">Enviar</button>
-                </form>
-
-                <form action="/upload" method="post" enctype="multipart/form-data">
-                    <label for="singleFile">Subir un documento:</label><br>
-                    <input type="file" id="singleFile" name="singleFile"
-                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-
-                    <label for="multipleFiles">Seleccionar múltiples archivos:</label><br>
-                    <input type="file" id="multipleFiles" name="multipleFiles[]" multiple>
-
-                    <button class="btn"  type="submit">Subir archivos</button>
-                </form>
-
-            </section>
-        </main>
-        <aside>
-            <h2>Info util</h2>
-            <section>
-                <h3>Horarios</h3>
-                <p>Lunes a viernes de 7pm a 9pm</p>
-            </section>
-        </aside>
+                        <button class="btn btn--accent"  type="submit">Enviar</button>
+                    </form>
+    
+                </section>
+            </main>
+            <aside class="aside">
+                <h2>Info util</h2>
+                <section>
+                    <h3>Horarios</h3>
+                    <p>Lunes a viernes de 7pm a 9pm</p>
+                </section>
+            </aside>
+        </div>
         <footer>
             <p>Todos los derechos reservados - 2026</p>
             <h3>Contacto</h3>
