@@ -342,6 +342,13 @@ a {
    18rem y reparte el sobrante. min(18rem, 100%) evita desbordar en pantallas
    más angostas que 18rem.
    -------------------------------------------------------------------------- */
+/* Al navegar a un ancla (#events, #contact...) el destino deja espacio para
+   que el header sticky no tape el título de la sección */
+section[id],
+main[id] {
+  scroll-margin-top: 5.5rem;
+}
+
 #events {
   margin-bottom: 2rem;
 }
@@ -457,30 +464,53 @@ a {
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  width: min(30rem, 100%); /* nunca más ancho que su contenedor */
+  gap: 1.5rem;
+  width: min(40rem, 100%); /* nunca más ancho que su contenedor */
+}
+
+/* Campos de texto: tamaño cómodo para tocar (mínimo 44px de alto), tipografía
+   heredada del sitio (los inputs no la heredan por defecto) y colores del
+   tema oscuro. color-scheme: dark hace que los controles nativos (calendario,
+   flechas del number) se dibujen también en oscuro. */
+form input,
+form textarea {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: .625rem .875rem;
+  font: inherit;
+  color: var(--text-color);
+  background-color: #161a24;
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  color-scheme: dark;
+  transition:
+    border-color var(--duration-base) ease,
+    box-shadow var(--duration-base) ease,
+    background-color var(--duration-base) ease;
+}
+
+form textarea {
+  min-height: 7rem;
+  resize: vertical; /* el usuario puede alargarlo, no ensancharlo */
+}
+
+form input::placeholder,
+form textarea::placeholder {
+  color: #7d849a;
+}
+
+form input:hover,
+form textarea:hover {
+  border-color: #3d4458;
 }
 
 /* :focus es accesibilidad: reemplazamos el outline por un borde + halo
    animados, nunca lo eliminamos sin sustituto */
-form input,
-form textarea {
-  border: 2px solid var(--border-color);
-  border-radius: 4px;
-  padding: 0 .5rem;
-  transition:
-    border-color var(--duration-base) ease,
-    box-shadow var(--duration-base) ease;
-}
-
-form input {
-  height: 2rem;
-}
-
 form input:focus,
 form textarea:focus {
   outline: none;
   border-color: var(--accent-color);
+  background-color: #1a1f2b;
   box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.25);
 }
 
@@ -488,23 +518,44 @@ form textarea:focus {
    calculado automáticamente con auto-fit. */
 .form-group {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(12rem, 100%), 1fr));
-  gap: .75rem 1rem;
-  padding: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  gap: 1.25rem 1.5rem;
+  padding: 1.5rem;
   border: 1px solid var(--border-color);
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .form-group legend {
+  padding: 0 .5rem;
   font-weight: bold;
-  margin-bottom: .5rem;
+  font-size: 1.125rem;
 }
 
 /* Campo: etiqueta encima del input */
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: .25rem;
+  gap: .5rem;
+}
+
+.form-field label {
+  font-weight: 700;
+  font-size: .9375rem;
+}
+
+/* Botón de envío más alto que los .btn de las tarjetas, alineado a la derecha */
+.form-submit {
+  align-self: flex-end;
+  min-height: 2.75rem;
+  padding: .75rem 2rem;
+  font: inherit;
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .form-submit {
+    align-self: stretch; /* en móvil ocupa todo el ancho: más fácil de tocar */
+  }
 }
 
 /* Campos anchos (ej. textarea) ocupan todas las columnas del fieldset */

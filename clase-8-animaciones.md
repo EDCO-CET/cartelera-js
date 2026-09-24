@@ -100,25 +100,31 @@ Regla que se repite toda la clase: **la `transition` se declara en el estado bas
 
 **Concepto.** El foco debe verse. Lo reemplazamos por un borde de color y un halo con `box-shadow`, ambos animables sin reflow.
 
-**Archivo.** `styles.css`, reemplazar `form input { height: 2rem; }`.
+**Archivo.** `styles.css`, reemplazar `form input { height: 2rem; }`. Aprovechamos para dar a los campos un tamaño cómodo (mínimo 44px de alto, el tamaño táctil recomendado), heredar la tipografía del sitio con `font: inherit` y usar los colores del tema oscuro.
 
 ```css
 form input,
 form textarea {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: .625rem .875rem;
+  font: inherit;
+  color: var(--text-color);
+  background-color: #161a24;
   border: 2px solid var(--border-color);
-  border-radius: 4px;
-  padding: 0 .5rem;
+  border-radius: 6px;
+  color-scheme: dark;
   transition:
     border-color var(--duration-base) ease,
-    box-shadow var(--duration-base) ease;
+    box-shadow var(--duration-base) ease,
+    background-color var(--duration-base) ease;
 }
-
-form input { height: 2rem; }
 
 form input:focus,
 form textarea:focus {
   outline: none;
   border-color: var(--accent-color);
+  background-color: #1a1f2b;
   box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.25);
 }
 ```
