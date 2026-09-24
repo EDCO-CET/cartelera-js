@@ -575,15 +575,34 @@ Anatomía de `linear-gradient(135deg, #063E5F 0%, #0f1117 55%)`:
 
 ## Paso 12 (extra) · Banner de bienvenida con imagen de fondo
 
-**Concepto.** Un *hero* o banner es la primera impresión del sitio. Tres ideas se combinan aquí:
+Este paso se construye por capas. Cada subpaso deja la página en un estado que se puede mostrar antes de seguir; así los estudiantes ven qué aporta cada propiedad.
+
+**Concepto.** Un *hero* o banner es la primera impresión del sitio: una imagen a lo ancho, un mensaje corto y una única acción. Tres ideas técnicas se combinan:
 
 1. **Fondos múltiples.** `background-image` acepta varias imágenes separadas por coma. La primera queda encima. Como un gradiente es una imagen (paso 11), podemos poner un gradiente semitransparente **sobre** la foto en una sola declaración, sin HTML extra.
-2. **`background-size: cover` + `background-position: center`.** La foto cubre toda el área sin deformarse y se recorta desde el centro. Es el equivalente de `object-fit: cover` para fondos.
-3. **Contraste garantizado.** El texto blanco sobre una foto cualquiera no es legible. La capa de gradiente oscurece más la zona donde está el texto (izquierda, 90%) y menos donde solo hay foto (derecha, 20%).
+2. **`background-size: cover` + `background-position: center`.** La foto cubre todo el área sin deformarse y se recorta desde el centro. Es el equivalente de `object-fit: cover` para fondos.
+3. **Contraste garantizado.** El texto blanco sobre una foto cualquiera no es legible. La capa de gradiente oscurece más la zona donde está el texto y menos donde solo hay foto.
 
-**Archivo `index.html`.** Justo después de `</header>` y antes de `<div class="layout">`:
+### 12.1 · Preparar la imagen
+
+Antes de escribir CSS hay que elegir la foto. Criterios:
+
+- **Horizontal y ancha.** El banner mide mucho más de ancho que de alto. Una foto vertical se recortará casi entera con `cover`.
+- **Zona "tranquila" para el texto.** Como el mensaje va a la izquierda, conviene que la izquierda de la foto sea oscura o poco detallada. La banda del escenario cumple: el músico y las luces están en el centro y la derecha.
+- **Peso razonable.** Es la imagen más grande de la página y se descarga en la primera pantalla. Se pidió a 1600×700 px y pesa 79 KB. Regla práctica: por debajo de 150 KB para un banner, y nunca subir la foto original de una cámara (varios MB).
+- **Licencia.** Igual que las tarjetas, viene de picsum.photos, que sirve fotos de Unsplash con licencia de uso libre. En un proyecto real, documentar la fuente.
+
+Se guarda como `img/banner.jpg`, junto a las imágenes de las tarjetas.
+
+> Para la clase: abrir la imagen sola en el navegador y preguntar "¿dónde pondrían el texto?". La respuesta guía el gradiente del subpaso 12.4.
+
+### 12.2 · La estructura HTML
+
+Justo después de `</header>` y antes de `<div class="layout">`:
 
 ```html
+<!-- Banner de bienvenida (hero): imagen de fondo con capa de gradiente
+     para garantizar contraste del texto. Ver .hero en styles.css -->
 <section class="hero" aria-labelledby="hero-title">
     <div class="hero-content">
         <h2 id="hero-title">Bienvenido a la cartelera</h2>
@@ -593,7 +612,18 @@ Anatomía de `linear-gradient(135deg, #063E5F 0%, #0f1117 55%)`:
 </section>
 ```
 
-**Archivo `styles.css`.** Primero, el `body` tiene una fila más:
+Decisiones de marcado que conviene explicar:
+
+- `<section>` y no `<div>`: es un bloque con sentido propio y tiene título. `aria-labelledby` lo conecta con ese título, así los lectores de pantalla anuncian "sección: Bienvenido a la cartelera".
+- `<h2>` y no `<h1>`: el `<h1>` de la página ya es "Cartelera de eventos" en el header. Solo debe haber uno.
+- `<a>` y no `<button>`: "Ver eventos" **navega** a `#events`. Un botón es para acciones (enviar, abrir, cerrar). Se le da la clase `.btn` para que se vea igual que los botones y herede su hover del paso 2.
+- `.hero-content` es un contenedor extra para poder limitar el ancho del texto sin limitar el ancho del fondo.
+
+**Qué se ve:** un bloque de texto plano entre el header y las tarjetas. El footer probablemente ya no está pegado abajo. Eso se arregla en 12.3.
+
+### 12.3 · Hacer sitio en el grid del `body`
+
+El `body` es un grid de filas (`header | layout | footer`). El hero es un hijo nuevo y necesita su fila:
 
 ```css
 body {
@@ -601,7 +631,112 @@ body {
 }
 ```
 
-Luego el bloque del hero, antes de `.layout`:
+**Qué se ve:** nada cambia a simple vista, pero el footer vuelve a quedar abajo. Sin esta línea el hero ocupaba la fila `1fr` y el layout caía en una fila implícita.
+
+### 12.4 · La foto de fondo y la capa de contraste
+
+Primero solo la foto, para ver el problema:
+
+```css
+.hero {
+  min-height: 45vh;
+  padding: 3rem max(var(--gutter), calc((100% - var(--max-width)) / 2));
+  background-image: url("img/banner.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: var(--secondary-color);
+}
+```
+
+**Qué se ve:** la foto ocupa el banner, pero el texto blanco se pierde en las zonas claras. El `padding` lateral es el mismo cálculo que usan header y layout, así el texto arranca alineado con el resto de la página.
+
+Ahora se apila el gradiente **encima** de la foto:
+
+```css
+.hero {
+  background-image:
+    linear-gradient(
+      to right,
+      rgba(15, 17, 23, 0.9) 0%,    /* izquierda: casi opaco, aquí va el texto */
+      rgba(15, 17, 23, 0.6) 55%,
+      rgba(15, 17, 23, 0.2) 100%   /* derecha: casi transparente, se ve la foto */
+    ),
+    url("img/banner.jpg");
+}
+```
+
+Los tres `rgba` usan el mismo color que `--background-color` (`#0f1117` = `15, 17, 23`) con distinta opacidad, por eso el banner se funde con la página. `background-size`, `position` y `repeat` se aplican a las dos capas.
+
+**Qué se ve:** el texto es legible en la izquierda y la foto sigue viéndose en la derecha.
+
+### 12.5 · Centrar y limitar el texto
+
+```css
+.hero {
+  display: grid;
+  align-content: center;   /* centra el bloque de texto en vertical */
+}
+
+.hero-content {
+  display: grid;
+  gap: 1rem;
+  justify-items: start;    /* el enlace no se estira a todo el ancho */
+  max-width: 36rem;        /* líneas de 60-70 caracteres, cómodas de leer */
+}
+
+.hero-cta {
+  text-decoration: none;   /* el <a> con .btn no debe verse subrayado */
+  display: inline-block;
+}
+```
+
+**Qué se ve:** el texto queda centrado verticalmente en el banner, el párrafo no se extiende hasta el borde derecho y el enlace parece un botón.
+
+### 12.6 · Tipografía fluida y entrada animada
+
+```css
+.hero h2 {
+  font-size: clamp(2rem, 4vw, 3rem); /* escala con el viewport entre 2rem y 3rem */
+  line-height: 1.1;
+}
+
+.hero p {
+  font-size: 1.125rem;
+}
+
+.hero-content {
+  animation: fade-up .8s var(--ease-out) both; /* la misma de las tarjetas */
+}
+```
+
+`clamp(mínimo, preferido, máximo)`: el título mide el 4% del ancho del viewport, pero nunca menos de 2rem ni más de 3rem. Es una media query en una sola línea. Y `fade-up` ya existe desde el paso 6: declarar los `@keyframes` por separado permite reutilizarlos.
+
+**Qué se ve:** al recargar, el texto entra subiendo. Al estrechar la ventana, el título se encoge de forma continua.
+
+### 12.7 · Ajustes para móvil y separación con el contenido
+
+```css
+@media (max-width: 600px) {
+  .hero {
+    min-height: 35vh;      /* en pantallas bajas 45vh dejaba poco espacio al contenido */
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+.layout {
+  padding: 2rem var(--gutter) 0; /* separa el contenido del banner */
+}
+```
+
+El `row-gap: 1rem` que tiene el `body` también añade una franja entre el header y el banner y entre el banner y el layout. Es una decisión de estilo: si se quiere el banner pegado al header, se quita ese `row-gap` y se deja la separación solo en `.layout`.
+
+**Qué se ve:** en móvil el banner es más bajo y el contenido no queda pegado a él.
+
+### Resultado final en `styles.css`
+
+El bloque completo, ya ordenado, va justo antes de `.layout`:
 
 ```css
 .hero {
@@ -652,14 +787,15 @@ Luego el bloque del hero, antes de `.layout`:
 }
 ```
 
-**Mostrar.**
+**Mostrar (demostraciones en DevTools sobre el resultado final).**
 
-1. Comentar la línea del `linear-gradient` (dejando solo la `url`). El texto se vuelve ilegible sobre las zonas claras de la foto. Volver a activarlo.
+1. Comentar la línea del `linear-gradient` dejando solo la `url`. El texto se vuelve ilegible sobre las zonas claras de la foto. Volver a activarlo.
 2. Cambiar `cover` por `contain`: la foto se ve entera pero deja huecos. Cambiar por `100% 100%`: se deforma. `cover` es casi siempre la respuesta.
 3. Mover `background-position` a `top` y a `bottom` para elegir qué parte de la foto se recorta.
-4. Redimensionar la ventana: el título escala entre 2rem y 3rem gracias a `clamp(min, preferido, max)`, sin media queries.
-5. Recargar: el bloque de texto entra con la misma animación `fade-up` de las tarjetas. Reutilizar `@keyframes` es la ventaja de haberlos declarado por separado (paso 6).
-6. Hacer clic en "Ver eventos": es un `<a>` con clase `.btn`, hereda hover y transición del paso 2. Un enlace que navega debe ser `<a>`, no `<button>`, aunque se vea igual.
+4. Redimensionar la ventana: el título escala entre 2rem y 3rem gracias a `clamp()`, sin media queries.
+5. Recargar: el bloque de texto entra con la misma animación `fade-up` de las tarjetas.
+6. Hacer clic en "Ver eventos": es un `<a>` con clase `.btn`, hereda hover y transición del paso 2, y el destino no queda tapado por el header sticky gracias a `scroll-margin-top` en las secciones con id.
+7. En la pestaña Network, recargar y buscar `banner.jpg`: ver el peso y el tiempo. Compararlo con lo que pesaría la foto original de una cámara.
 
 **Errores comunes.**
 - Poner la `url()` antes del gradiente: la foto tapa el gradiente y no hay oscurecimiento.
@@ -667,6 +803,8 @@ Luego el bloque del hero, antes de `.layout`:
 - Usar `height: 45vh` en vez de `min-height`: si el texto crece (móvil, zoom) se desborda del banner.
 - Olvidar añadir la fila en `grid-template-rows` del `body`: el hero cae en una fila implícita y el `1fr` deja de estar en el layout, con lo que el footer ya no queda pegado abajo.
 - Imagen sin `background-color` de respaldo: mientras carga, el texto blanco queda sobre fondo negro plano. Aceptable, pero el color secundario mantiene la identidad visual.
+- Poner el texto del banner dentro de la imagen (una foto con el título ya escrito). No se puede traducir, no lo lee un buscador ni un lector de pantalla, y se pixela al escalar.
+- Un segundo `<h1>` en el hero. Rompe la jerarquía de títulos de la página.
 
 ---
 
