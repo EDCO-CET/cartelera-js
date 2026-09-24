@@ -105,6 +105,50 @@ a {
   );
 }
 
+/* --------------------------------------------------------------------------
+   Gradiente que cambia al hacer scroll (clase 8, extra)
+   Un gradiente no se puede transicionar: el navegador no interpola entre dos
+   imágenes. Truco: un pseudoelemento con el SEGUNDO gradiente cuya opacidad
+   va de 0 a 1. Y en vez de un evento de scroll en JS, la animación la dirige
+   el propio scroll con animation-timeline: scroll() (scroll-driven animation).
+   -------------------------------------------------------------------------- */
+.header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;            /* detrás del texto, delante del fondo del header */
+  background-image: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--secondary-color) 45%,
+    var(--background-color) 100%
+  );
+  opacity: 0;
+  /* Respaldo (JS añade .is-scrolled cuando no hay soporte de scroll()) */
+  transition: opacity var(--duration-slow) ease;
+}
+
+/* Animación dirigida por el scroll del documento: recorre los keyframes
+   entre 0 y 160px de desplazamiento, sin tiempo ni JavaScript.
+   animation-timeline debe ir DESPUÉS del atajo animation, que la resetea. */
+@supports (animation-timeline: scroll()) {
+  .header::before {
+    transition: none;
+    animation: header-encender linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 160px;
+  }
+}
+
+.header.is-scrolled::before {
+  opacity: 1;
+}
+
+@keyframes header-encender {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 /* Línea inferior degradada: acento -> primario -> transparente.
    Un pseudoelemento en vez de border-bottom porque los bordes solo aceptan
    colores planos (border-image existe, pero es menos predecible). */

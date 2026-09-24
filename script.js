@@ -30,3 +30,21 @@ if (!('IntersectionObserver' in window) || reducirMovimiento) {
 
   elementos.forEach((el) => observador.observe(el));
 }
+
+/* --------------------------------------------------------------------------
+   Header: gradiente que cambia al hacer scroll (respaldo)
+   Si el navegador soporta animation-timeline: scroll(), el CSS ya lo hace
+   solo y aquí no se ejecuta nada. Si no, alternamos una clase con el scroll.
+   -------------------------------------------------------------------------- */
+const soportaScrollTimeline = CSS.supports('animation-timeline: scroll()');
+
+if (!soportaScrollTimeline) {
+  const header = document.querySelector('.header');
+
+  const actualizarHeader = () => {
+    header.classList.toggle('is-scrolled', window.scrollY > 40);
+  };
+
+  actualizarHeader(); // estado inicial (p. ej. al recargar a mitad de página)
+  window.addEventListener('scroll', actualizarHeader, { passive: true });
+}

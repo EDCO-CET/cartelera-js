@@ -20,6 +20,7 @@ Al terminar, la cartelera tendrá movimiento con propósito y sin JavaScript sal
 | Todo se desactiva si el usuario prefiere menos movimiento | `prefers-reduced-motion`, `will-change` | 27, 28 |
 | Header con fondo degradado, línea inferior degradada y título con gradiente en el texto | `linear-gradient`, `background-clip: text` | Extra (no está en las slides) |
 | Banner de bienvenida con foto de fondo, capa de gradiente y entrada animada | fondos múltiples, `background-size: cover`, `clamp()` | Extra (no está en las slides) |
+| El gradiente del header se "enciende" a medida que se hace scroll | `animation-timeline: scroll()`, `animation-range`, `@supports` | Extra (no está en las slides) |
 
 Criterio de aceptación (slide 34): **ninguna animación usa `width`, `height`, `top` ni `left`, y todo respeta `prefers-reduced-motion`.**
 
@@ -663,6 +664,85 @@ Luego el bloque del hero, antes de `.layout`:
 
 ---
 
+## Paso 13 (extra) · El gradiente del header cambia al hacer scroll
+
+**Concepto.** Dos ideas nuevas encadenadas:
+
+1. **Cómo "animar" un gradiente.** No se puede: `transition` no interpola entre dos imágenes (paso 11). La solución es tener los dos gradientes a la vez, el segundo en un pseudoelemento `::before` que cubre el header, y animar su `opacity`. Es la propiedad más barata que existe (slide 9).
+2. **Scroll-driven animations.** Hasta ahora una animación avanzaba con el tiempo. Con `animation-timeline: scroll()` avanza con el **desplazamiento**: la posición del scroll decide en qué punto de los keyframes está. Sin evento `scroll`, sin JavaScript, y corre en el hilo del compositor, así que nunca se entrecorta. `animation-range: 0 160px` dice que los keyframes se recorren entre 0 y 160 px de scroll.
+
+Soporte en 2026: Chrome, Edge y Safari lo tienen. Firefox lo tiene detrás de una bandera. Por eso lo envolvemos en `@supports` y dejamos un respaldo en JavaScript que solo se ejecuta cuando hace falta.
+
+**Archivo `styles.css`.** Debajo de `.header`, antes de `.header::after`:
+
+```css
+.header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;            /* detrás del texto, delante del fondo del header */
+  background-image: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--secondary-color) 45%,
+    var(--background-color) 100%
+  );
+  opacity: 0;
+  transition: opacity var(--duration-slow) ease;   /* usado solo por el respaldo */
+}
+
+@supports (animation-timeline: scroll()) {
+  .header::before {
+    transition: none;
+    animation: header-encender linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 160px;
+  }
+}
+
+.header.is-scrolled::before {
+  opacity: 1;
+}
+
+@keyframes header-encender {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+```
+
+**Archivo `script.js`.** Al final:
+
+```js
+const soportaScrollTimeline = CSS.supports('animation-timeline: scroll()');
+
+if (!soportaScrollTimeline) {
+  const header = document.querySelector('.header');
+
+  const actualizarHeader = () => {
+    header.classList.toggle('is-scrolled', window.scrollY > 40);
+  };
+
+  actualizarHeader();
+  window.addEventListener('scroll', actualizarHeader, { passive: true });
+}
+```
+
+**Mostrar.**
+
+1. Hacer scroll despacio: el header pasa del gradiente oscuro al azul en los primeros 160 px, y vuelve al subir. No es un interruptor, sigue al dedo o a la rueda del mouse.
+2. En DevTools › Elements, seleccionar `.header` y ver el `::before`. Cambiar `animation-range` a `0 600px`: el cambio se estira. Cambiar a `100px 200px`: no empieza hasta pasar 100 px.
+3. Comentar `animation-timeline` en el `@supports`: la animación pasa a ejecutarse con el tiempo (duración por defecto 0 s, así que salta a `to`). Es la prueba de que la línea de tiempo es lo que reemplaza al tiempo.
+4. Simular un navegador sin soporte: en la consola, `CSS.supports('animation-timeline: scroll()')` devuelve `true`. Comentar todo el bloque `@supports` y añadir a mano la clase `is-scrolled` al header en Elements: el respaldo hace una transición de 500 ms al mismo estado final.
+5. Con `z-index: -1` quitado, el `::before` tapa el título y el menú. Explicar que el header es un contexto de apilamiento por tener `position: sticky` y `z-index: 10`, y por eso el `-1` queda dentro del header y no detrás de la página.
+
+**Errores comunes.**
+- Escribir `animation-timeline` antes del atajo `animation`. El atajo reinicia `animation-timeline` a `auto` y la animación vuelve a ser temporal.
+- Poner `scroll()` sin argumento cuando el elemento está dentro de un contenedor con scroll propio: por defecto usa el ancestro con scroll más cercano. `scroll(root)` fuerza el documento.
+- Intentar transicionar `background-image` directamente. No da error, simplemente cambia de golpe.
+- Olvidar `{ passive: true }` en el listener de respaldo: el navegador espera al handler antes de desplazar y el scroll se siente pesado.
+
+---
+
 ## Checklist de cierre
 
 Ejecutar en la terminal del proyecto. Debe devolver vacío:
@@ -680,6 +760,7 @@ grep -nE "transition:|animation:" styles.css | grep -E "width|height|top|left"
 - [ ] Tab recorre botones, inputs, enlaces y la tarjeta 3D con foco visible.
 - [ ] El header tiene `background-color` de respaldo además del gradiente.
 - [ ] El texto del banner es legible en todo el ancho (la capa de gradiente está activa).
+- [ ] El header cambia de gradiente al hacer scroll y `animation-timeline` está después del atajo `animation`.
 
 ```bash
 git add .
@@ -702,3 +783,5 @@ git commit -m "feat: clase-8"
 - [CSS Triggers](https://csstriggers.com) · qué propiedades provocan layout, paint o composite
 - [MDN · Using CSS gradients](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_images/Using_CSS_gradients)
 - [cssgradient.io](https://cssgradient.io) · editor visual de gradientes
+- [MDN · CSS scroll-driven animations](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_scroll-driven_animations)
+- [scroll-driven-animations.style](https://scroll-driven-animations.style) · demos y herramientas de Chrome
