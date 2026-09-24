@@ -65,6 +65,7 @@ body {
   background-color: var(--background-color);
   color: var(--text-color);
   line-height: 1.5;
+  row-gap: 1rem;
 }
 
 h1, h2, h3 {
@@ -284,6 +285,7 @@ a {
   grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--sidebar-width);
   grid-template-areas: "featured main info";
   column-gap: 2rem;         /* aire entre los asides y el contenido central */
+  row-gap: 1rem;
   align-items: start;
   width: 100%;
   max-width: var(--max-width);
@@ -294,6 +296,9 @@ a {
 /* Cada hijo del layout se ubica por nombre de área, no por orden en el HTML */
 .main {
   grid-area: main;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .aside {
