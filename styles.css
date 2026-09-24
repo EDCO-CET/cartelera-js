@@ -92,7 +92,45 @@ a {
      el padding lateral es el mayor entre el gutter y el espacio sobrante
      a cada lado del ancho máximo, igual que hace margin: 0 auto en .layout */
   padding: 1rem max(var(--gutter), calc((100% - var(--max-width)) / 2));
+  /* Gradiente (clase 8, extra)
+     Un gradiente NO es un color: es una imagen generada por el navegador,
+     por eso va en background-image y puede combinarse con background-color
+     como respaldo. 135deg = de la esquina superior izquierda a la inferior
+     derecha; cada color seguido de un % es una "parada" (color stop). */
   background-color: var(--background-color);
+  background-image: linear-gradient(
+    135deg,
+    var(--secondary-color) 0%,
+    var(--background-color) 55%
+  );
+}
+
+/* Línea inferior degradada: acento -> primario -> transparente.
+   Un pseudoelemento en vez de border-bottom porque los bordes solo aceptan
+   colores planos (border-image existe, pero es menos predecible). */
+.header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background-image: linear-gradient(
+    90deg,
+    var(--accent-color),
+    var(--primary-color) 40%,
+    transparent
+  );
+}
+
+/* Texto con gradiente: el fondo se recorta a la forma de las letras
+   (background-clip: text) y el color del texto se vuelve transparente
+   para que se vea el fondo a través de él. */
+.header h1 {
+  background-image: linear-gradient(90deg, var(--white-color), var(--accent-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .nav-list {

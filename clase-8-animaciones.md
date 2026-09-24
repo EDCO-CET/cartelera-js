@@ -18,6 +18,7 @@ Al terminar, la cartelera tendrá movimiento con propósito y sin JavaScript sal
 | Cajas de la demo Grid que escalan y rotan | variables CSS animadas | 24 |
 | Secciones que aparecen al hacer scroll | Intersection Observer (único JS) | 25 |
 | Todo se desactiva si el usuario prefiere menos movimiento | `prefers-reduced-motion`, `will-change` | 27, 28 |
+| Header con fondo degradado, línea inferior degradada y título con gradiente en el texto | `linear-gradient`, `background-clip: text` | Extra (no está en las slides) |
 
 Criterio de aceptación (slide 34): **ninguna animación usa `width`, `height`, `top` ni `left`, y todo respeta `prefers-reduced-motion`.**
 
@@ -499,6 +500,71 @@ if (!('IntersectionObserver' in window) || reducirMovimiento) {
 
 ---
 
+## Paso 11 (extra) · Gradientes en la barra de navegación
+
+**Concepto.** Un gradiente no es un color: es una **imagen que genera el navegador**. Por eso se declara en `background-image` (o en el atajo `background`) y no en `background-color`. Hay tres tipos: `linear-gradient` (en una dirección), `radial-gradient` (desde un centro) y `conic-gradient` (girando alrededor de un centro). Los gradientes reemplazaron a las imágenes PNG cortadas de los 2000: pesan cero bytes, escalan a cualquier tamaño y usan las variables del proyecto.
+
+Anatomía de `linear-gradient(135deg, #063E5F 0%, #0f1117 55%)`:
+
+- `135deg`: dirección. `0deg` va de abajo hacia arriba, `90deg` de izquierda a derecha, `180deg` de arriba hacia abajo. También acepta `to right`, `to bottom left`.
+- `#063E5F 0%`: primera parada de color (*color stop*). El porcentaje dice dónde el color está "puro".
+- `#0f1117 55%`: segunda parada. Entre 0% y 55% el navegador interpola; después del 55% el color se mantiene.
+
+**Archivo.** `styles.css`, en `.header` y dos reglas nuevas debajo.
+
+```css
+.header {
+  /* ...propiedades existentes... */
+  background-color: var(--background-color);   /* respaldo si el gradiente falla */
+  background-image: linear-gradient(
+    135deg,
+    var(--secondary-color) 0%,
+    var(--background-color) 55%
+  );
+}
+
+/* Línea inferior degradada. Los bordes solo aceptan colores planos,
+   por eso se usa un pseudoelemento posicionado. */
+.header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background-image: linear-gradient(
+    90deg,
+    var(--accent-color),
+    var(--primary-color) 40%,
+    transparent
+  );
+}
+
+/* Texto con gradiente */
+.header h1 {
+  background-image: linear-gradient(90deg, var(--white-color), var(--accent-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+```
+
+**Mostrar.**
+
+1. Cambiar `135deg` por `90deg` y por `to bottom` en DevTools para ver cómo gira la dirección.
+2. Mover el `55%` a `100%` y a `20%`: la misma pareja de colores produce una transición larga o un corte casi seco.
+3. Poner dos paradas en el mismo porcentaje (`red 50%, blue 50%`): se obtiene un borde duro sin degradado. Así se hacen rayas y patrones con CSS puro.
+4. En el título, comentar `color: transparent` y ver que el gradiente desaparece detrás del texto blanco. `background-clip: text` recorta el fondo a las letras, pero el color del texto sigue tapándolo.
+5. Enlazar con la clase: **los gradientes no se pueden animar con `transition`**. El navegador no sabe interpolar entre dos imágenes. Dos soluciones: (a) hacer el fondo más grande que el elemento (`background-size: 200%`) y animar `background-position`, o (b) poner el gradiente final en un pseudoelemento y animar su `opacity`. La segunda es la que respeta la regla de la slide 9.
+
+**Errores comunes.**
+- Escribir el gradiente en `background-color`. No es un color, el navegador lo ignora.
+- Olvidar el `background-color` de respaldo: si el gradiente no se soporta (o se escribe mal), el header queda transparente sobre el contenido al hacer scroll.
+- Texto con gradiente sin suficiente contraste. Los extremos del gradiente deben cumplir contraste con el fondo por sí solos; aquí van de blanco a azul claro sobre fondo oscuro.
+- `background-clip: text` sin el prefijo `-webkit-`: Safari y Chrome antiguos lo necesitan todavía.
+
+---
+
 ## Checklist de cierre
 
 Ejecutar en la terminal del proyecto. Debe devolver vacío:
@@ -514,6 +580,7 @@ grep -nE "transition:|animation:" styles.css | grep -E "width|height|top|left"
 - [ ] Con Reducir movimiento activado la página se ve completa y es usable.
 - [ ] Con JavaScript desactivado no hay contenido oculto.
 - [ ] Tab recorre botones, inputs, enlaces y la tarjeta 3D con foco visible.
+- [ ] El header tiene `background-color` de respaldo además del gradiente.
 
 ```bash
 git add .
@@ -534,3 +601,5 @@ git commit -m "feat: clase-8"
 - [cubic-bezier.com](https://cubic-bezier.com) · editor de curvas
 - [Animista](https://animista.net) · generador de animaciones
 - [CSS Triggers](https://csstriggers.com) · qué propiedades provocan layout, paint o composite
+- [MDN · Using CSS gradients](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_images/Using_CSS_gradients)
+- [cssgradient.io](https://cssgradient.io) · editor visual de gradientes
