@@ -168,7 +168,7 @@ form textarea:focus {
 
 **Concepto.** Patrón galería: el `:hover` del contenedor dispara cambios en los hijos. El `overflow: hidden` del padre recorta el zoom de la imagen. La etiqueta sube con `translateY(100%) → 0` en lugar de `bottom: -100% → 0`.
 
-**Archivo `index.html`.** En cada una de las tres tarjetas, envolver la imagen:
+**Archivo `index.html`.** En cada una de las seis tarjetas, envolver la imagen (cada tarjeta tiene su propia imagen en `img/`):
 
 ```html
 <div class="card-media">
@@ -262,9 +262,12 @@ Y dentro de `.card`:
 .card:nth-child(1) { animation-delay: .1s; }
 .card:nth-child(2) { animation-delay: .2s; }
 .card:nth-child(3) { animation-delay: .3s; }
+.card:nth-child(4) { animation-delay: .4s; }
+.card:nth-child(5) { animation-delay: .5s; }
+.card:nth-child(6) { animation-delay: .6s; }
 ```
 
-**Mostrar.** Recargar la página: las tarjetas aparecen una tras otra. Abrir DevTools › Animations, poner la velocidad al 25% y recargar para verlo en detalle. Cambiar `both` por `none` y recargar: las tarjetas parpadean visibles antes de desaparecer y empezar. Es la forma más clara de explicar `fill-mode`.
+**Mostrar.** Recargar la página: las seis tarjetas aparecen una tras otra, con 0,1 s entre cada una. Abrir DevTools › Animations, poner la velocidad al 25% y recargar para verlo en detalle. Cambiar `both` por `none` y recargar: las tarjetas parpadean visibles antes de desaparecer y empezar. Es la forma más clara de explicar `fill-mode`.
 
 **Errores comunes.**
 - Declarar el `@keyframes` y olvidar la propiedad `animation`. No pasa nada y no hay error en consola.
