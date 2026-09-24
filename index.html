@@ -28,6 +28,23 @@
         <div class="layout">
             <aside class="aside aside--featured">
                 <h2>Eventos destacados</h2>
+                <!-- Tarjeta 3D: gira con hover (mouse) o focus-within (teclado/touch).
+                     Estructura: escenario (perspective) > interior (preserve-3d) > 2 caras -->
+                <div class="flip-card" tabindex="0" aria-label="Evento destacado: Concierto de jazz. Pasa el cursor o enfoca para ver detalles">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-face flip-card-front">
+                            <img class="flip-card-image" src="img/jazz.jpg" alt="">
+                            <h3>Concierto de jazz</h3>
+                        </div>
+                        <div class="flip-card-face flip-card-back">
+                            <h3>Concierto de jazz</h3>
+                            <p>Viernes 2 de octubre, 8 pm</p>
+                            <p>Teatro Colón</p>
+                            <!-- .btn--pulse: único elemento con animación de pulso en la pantalla -->
+                            <button class="btn btn--accent btn--pulse">Comprar</button>
+                        </div>
+                    </div>
+                </div>
             </aside>
             <main id="home" class="main">
                 <section id="events">
@@ -35,7 +52,11 @@
                     <!-- Grid de tarjetas: columnas automáticas con repeat(auto-fit, minmax()) -->
                     <div class="events-container">
                         <article class="card">
-                            <img class="card-image" src="img/jazz.jpg" alt="Fila de saxofonistas tocando en un concierto">
+                            <!-- .card-media recorta el zoom de la imagen (overflow: hidden) y posiciona la etiqueta -->
+                            <div class="card-media">
+                                <img class="card-image" src="img/jazz.jpg" alt="Fila de saxofonistas tocando en un concierto">
+                                <span class="card-tag">Ver detalles</span>
+                            </div>
                             <div class="card-body">
                                 <h3>Concierto de jazz</h3>
                                 <p>Concierto de jazz en vivo</p>
@@ -46,7 +67,11 @@
                             </div>
                         </article>
                         <article class="card">
-                            <img class="card-image" src="img/jazz.jpg" alt="Fila de saxofonistas tocando en un concierto">
+                            <!-- .card-media recorta el zoom de la imagen (overflow: hidden) y posiciona la etiqueta -->
+                            <div class="card-media">
+                                <img class="card-image" src="img/jazz.jpg" alt="Fila de saxofonistas tocando en un concierto">
+                                <span class="card-tag">Ver detalles</span>
+                            </div>
                             <div class="card-body">
                                 <h3>Concierto de jazz</h3>
                                 <p>Concierto de jazz en vivo</p>
@@ -57,7 +82,11 @@
                             </div>
                         </article>
                         <article class="card">
-                            <img class="card-image" src="img/jazz.jpg" alt="Fila de saxofonistas tocando en un concierto">
+                            <!-- .card-media recorta el zoom de la imagen (overflow: hidden) y posiciona la etiqueta -->
+                            <div class="card-media">
+                                <img class="card-image" src="img/jazz.jpg" alt="Fila de saxofonistas tocando en un concierto">
+                                <span class="card-tag">Ver detalles</span>
+                            </div>
                             <div class="card-body">
                                 <h3>Concierto de jazz</h3>
                                 <p>Concierto de jazz en vivo</p>
@@ -69,11 +98,11 @@
                         </article>
                     </div>
                 </section>
-                <section id="aboutus">
+                <section id="aboutus" class="reveal">
                     <h2>Acerca de nosotros</h2>
                     <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quod odit deserunt officiis sint veritatis, eveniet eligendi adipisci nihil atque, earum, ipsum totam rerum maiores repudiandae autem accusantium fugiat dicta. Explicabo.</p>
                 </section>
-                <section id="contact">
+                <section id="contact" class="reveal">
                     <h2 class="title--blue">Contacto</h2>
                     <form class="form" action="/test"  method="post" >
                         <fieldset class="form-group">
@@ -119,7 +148,7 @@
                     </form>
     
                 </section>
-                <section>
+                <section class="reveal">
                     <h2>Grid</h2>
                     <!-- Demo: grid explícito de 3 columnas (1fr 2fr 150px) con filas automáticas -->
                     <div class="grid-container">
@@ -145,7 +174,7 @@
             </aside>
         </div>
         <!-- Footer: grid de columnas automáticas (derechos | contacto) -->
-        <footer class="footer">
+        <footer class="footer reveal">
             <p>Todos los derechos reservados - 2026</p>
             <div class="footer-contact">
                 <h3>Contacto</h3>
