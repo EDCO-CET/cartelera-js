@@ -57,7 +57,7 @@ body {
   /* minmax(0, 1fr): la columna nunca crece más que el viewport aunque un hijo
      tenga contenido ancho (evita scroll horizontal en móvil) */
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto 1fr auto; /* header | .layout | footer */
+  grid-template-rows: auto auto 1fr auto; /* header | .hero | .layout | footer */
   min-height: 100vh;
   font-family: 'Lato', sans-serif;
   font-weight: 400;
@@ -168,8 +168,66 @@ a {
 }
 
 /* --------------------------------------------------------------------------
-   Layout de contenido (fila 2 del grid del body): 3 columnas con áreas nombradas
-   
+   Banner de bienvenida / hero (fila 2 del grid del body)
+   Dos fondos apilados en una sola declaración, separados por coma:
+   el primero (gradiente) queda ENCIMA del segundo (la foto). El gradiente
+   oscurece la imagen para que el texto blanco tenga contraste suficiente.
+   -------------------------------------------------------------------------- */
+.hero {
+  display: grid;
+  align-content: center;              /* centra el bloque de texto en vertical */
+  min-height: 45vh;
+  padding: 3rem max(var(--gutter), calc((100% - var(--max-width)) / 2));
+  background-image:
+    linear-gradient(
+      to right,
+      rgba(15, 17, 23, 0.9) 0%,
+      rgba(15, 17, 23, 0.6) 55%,
+      rgba(15, 17, 23, 0.2) 100%
+    ),
+    url("img/banner.jpg");
+  background-size: cover;             /* la foto cubre todo el área sin deformarse */
+  background-position: center;        /* y se recorta desde el centro */
+  background-repeat: no-repeat;
+  background-color: var(--secondary-color); /* respaldo mientras carga la imagen */
+}
+
+/* Texto limitado en ancho para que las líneas sean legibles sobre la foto */
+.hero-content {
+  display: grid;
+  gap: 1rem;
+  justify-items: start;
+  max-width: 36rem;
+  /* Reutilizamos la animación de entrada de las tarjetas */
+  animation: fade-up .8s var(--ease-out) both;
+}
+
+.hero h2 {
+  font-size: clamp(2rem, 4vw, 3rem); /* escala con el viewport entre 2rem y 3rem */
+  line-height: 1.1;
+}
+
+.hero p {
+  font-size: 1.125rem;
+}
+
+/* El CTA es un enlace con aspecto de botón: hereda .btn y quita el subrayado */
+.hero-cta {
+  text-decoration: none;
+  display: inline-block;
+}
+
+@media (max-width: 600px) {
+  .hero {
+    min-height: 35vh;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Layout de contenido (fila 3 del grid del body): 3 columnas con áreas nombradas
+
    |  featured  |        main        |   info   |
    
    - minmax(0, 1fr) evita que la columna central crezca por contenido ancho
@@ -186,7 +244,7 @@ a {
   width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 var(--gutter);
+  padding: 2rem var(--gutter) 0; /* separa el contenido del banner */
 }
 
 /* Cada hijo del layout se ubica por nombre de área, no por orden en el HTML */
@@ -443,7 +501,7 @@ form textarea:focus {
 }
 
 /* --------------------------------------------------------------------------
-   Footer (fila 3 del grid del body)
+   Footer (fila 4 del grid del body)
    Columnas automáticas: derechos y contacto lado a lado, apilados en móvil.
    -------------------------------------------------------------------------- */
 .footer {

@@ -19,6 +19,7 @@ Al terminar, la cartelera tendrá movimiento con propósito y sin JavaScript sal
 | Secciones que aparecen al hacer scroll | Intersection Observer (único JS) | 25 |
 | Todo se desactiva si el usuario prefiere menos movimiento | `prefers-reduced-motion`, `will-change` | 27, 28 |
 | Header con fondo degradado, línea inferior degradada y título con gradiente en el texto | `linear-gradient`, `background-clip: text` | Extra (no está en las slides) |
+| Banner de bienvenida con foto de fondo, capa de gradiente y entrada animada | fondos múltiples, `background-size: cover`, `clamp()` | Extra (no está en las slides) |
 
 Criterio de aceptación (slide 34): **ninguna animación usa `width`, `height`, `top` ni `left`, y todo respeta `prefers-reduced-motion`.**
 
@@ -565,6 +566,103 @@ Anatomía de `linear-gradient(135deg, #063E5F 0%, #0f1117 55%)`:
 
 ---
 
+## Paso 12 (extra) · Banner de bienvenida con imagen de fondo
+
+**Concepto.** Un *hero* o banner es la primera impresión del sitio. Tres ideas se combinan aquí:
+
+1. **Fondos múltiples.** `background-image` acepta varias imágenes separadas por coma. La primera queda encima. Como un gradiente es una imagen (paso 11), podemos poner un gradiente semitransparente **sobre** la foto en una sola declaración, sin HTML extra.
+2. **`background-size: cover` + `background-position: center`.** La foto cubre toda el área sin deformarse y se recorta desde el centro. Es el equivalente de `object-fit: cover` para fondos.
+3. **Contraste garantizado.** El texto blanco sobre una foto cualquiera no es legible. La capa de gradiente oscurece más la zona donde está el texto (izquierda, 90%) y menos donde solo hay foto (derecha, 20%).
+
+**Archivo `index.html`.** Justo después de `</header>` y antes de `<div class="layout">`:
+
+```html
+<section class="hero" aria-labelledby="hero-title">
+    <div class="hero-content">
+        <h2 id="hero-title">Bienvenido a la cartelera</h2>
+        <p>Conciertos, festivales, talleres y encuentros en Bogotá. Encuentra tu próximo plan y compra tu entrada en un solo lugar.</p>
+        <a class="btn btn--accent hero-cta" href="#events">Ver eventos</a>
+    </div>
+</section>
+```
+
+**Archivo `styles.css`.** Primero, el `body` tiene una fila más:
+
+```css
+body {
+  grid-template-rows: auto auto 1fr auto; /* header | .hero | .layout | footer */
+}
+```
+
+Luego el bloque del hero, antes de `.layout`:
+
+```css
+.hero {
+  display: grid;
+  align-content: center;
+  min-height: 45vh;
+  padding: 3rem max(var(--gutter), calc((100% - var(--max-width)) / 2));
+  background-image:
+    linear-gradient(
+      to right,
+      rgba(15, 17, 23, 0.9) 0%,
+      rgba(15, 17, 23, 0.6) 55%,
+      rgba(15, 17, 23, 0.2) 100%
+    ),
+    url("img/banner.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: var(--secondary-color);
+}
+
+.hero-content {
+  display: grid;
+  gap: 1rem;
+  justify-items: start;
+  max-width: 36rem;
+  animation: fade-up .8s var(--ease-out) both;
+}
+
+.hero h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.1;
+}
+
+.hero p { font-size: 1.125rem; }
+
+.hero-cta {
+  text-decoration: none;
+  display: inline-block;
+}
+
+@media (max-width: 600px) {
+  .hero {
+    min-height: 35vh;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+```
+
+**Mostrar.**
+
+1. Comentar la línea del `linear-gradient` (dejando solo la `url`). El texto se vuelve ilegible sobre las zonas claras de la foto. Volver a activarlo.
+2. Cambiar `cover` por `contain`: la foto se ve entera pero deja huecos. Cambiar por `100% 100%`: se deforma. `cover` es casi siempre la respuesta.
+3. Mover `background-position` a `top` y a `bottom` para elegir qué parte de la foto se recorta.
+4. Redimensionar la ventana: el título escala entre 2rem y 3rem gracias a `clamp(min, preferido, max)`, sin media queries.
+5. Recargar: el bloque de texto entra con la misma animación `fade-up` de las tarjetas. Reutilizar `@keyframes` es la ventaja de haberlos declarado por separado (paso 6).
+6. Hacer clic en "Ver eventos": es un `<a>` con clase `.btn`, hereda hover y transición del paso 2. Un enlace que navega debe ser `<a>`, no `<button>`, aunque se vea igual.
+
+**Errores comunes.**
+- Poner la `url()` antes del gradiente: la foto tapa el gradiente y no hay oscurecimiento.
+- Ruta de la imagen relativa al HTML en vez de al CSS. En `url()` la ruta se resuelve desde la hoja de estilos; aquí coinciden porque ambos están en la raíz.
+- Usar `height: 45vh` en vez de `min-height`: si el texto crece (móvil, zoom) se desborda del banner.
+- Olvidar añadir la fila en `grid-template-rows` del `body`: el hero cae en una fila implícita y el `1fr` deja de estar en el layout, con lo que el footer ya no queda pegado abajo.
+- Imagen sin `background-color` de respaldo: mientras carga, el texto blanco queda sobre fondo negro plano. Aceptable, pero el color secundario mantiene la identidad visual.
+
+---
+
 ## Checklist de cierre
 
 Ejecutar en la terminal del proyecto. Debe devolver vacío:
@@ -581,6 +679,7 @@ grep -nE "transition:|animation:" styles.css | grep -E "width|height|top|left"
 - [ ] Con JavaScript desactivado no hay contenido oculto.
 - [ ] Tab recorre botones, inputs, enlaces y la tarjeta 3D con foco visible.
 - [ ] El header tiene `background-color` de respaldo además del gradiente.
+- [ ] El texto del banner es legible en todo el ancho (la capa de gradiente está activa).
 
 ```bash
 git add .
