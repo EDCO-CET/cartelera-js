@@ -23,10 +23,16 @@
                 </ul>
             </nav>
         </header>
+        <!-- Layout principal: CSS Grid de 3 columnas (áreas: featured | main | info).
+             Cada hijo se posiciona con grid-area, ver .layout en styles.css -->
         <div class="layout">
-            <main id="home">
+            <aside class="aside aside--featured">
+                <h2>Eventos destacados</h2>
+            </aside>
+            <main id="home" class="main">
                 <section id="events">
                     <h2>Proximos eventos</h2>
+                    <!-- Grid de tarjetas: columnas automáticas con repeat(auto-fit, minmax()) -->
                     <div class="events-container">
                         <article class="card">
                             <img class="card-image" src="img/jazz.jpg" alt="Fila de saxofonistas tocando en un concierto">
@@ -99,21 +105,38 @@
                                 <label for="date">Fecha</label>
                                 <input type="date" id="date" name="date"><br>
                             </div>
-                            <div class="form-field">
+                            <div class="form-field form-field--full">
                                 <label for="comentario">Comentario</label>
                                 <textarea rows="5" cols="10" id="comentario" name="comentario" placeholder="Comentario"></textarea><br>
                             </div>
                             <div class="form-field">
                                 <label for="edad">Edad</label>
                                 <input type="number" name="edad" id="edad" min="18" max="65">
+                            </div>
                         </fieldset>
 
                         <button class="btn btn--accent"  type="submit">Enviar</button>
                     </form>
     
                 </section>
+                <section>
+                    <h2>Grid</h2>
+                    <!-- Demo: grid explícito de 3 columnas (1fr 2fr 150px) con filas automáticas -->
+                    <div class="grid-container">
+                        <div class="box">
+                            <p>Box 1</p>
+                        </div>
+                        <div class="box">
+                            <p>Box 2</p>
+                        </div>
+                        <div class="box"></div>
+                        <div class="box"></div>
+                        <div class="box"></div>
+                        <div class="box"></div>
+                    </div>
+                </section>
             </main>
-            <aside class="aside">
+            <aside class="aside aside--info">
                 <h2>Info util</h2>
                 <section>
                     <h3>Horarios</h3>
@@ -121,13 +144,16 @@
                 </section>
             </aside>
         </div>
-        <footer>
+        <!-- Footer: grid de columnas automáticas (derechos | contacto) -->
+        <footer class="footer">
             <p>Todos los derechos reservados - 2026</p>
-            <h3>Contacto</h3>
-            <address>
-                <p>Correo: <a href="mailto:cartelera@edco.com">cartelera@edco.com</a></p>
-                <p>Telefono: <a href="tel:+57601858585">+57601858585</a></p>
-            </address>
+            <div class="footer-contact">
+                <h3>Contacto</h3>
+                <address>
+                    <p>Correo: <a href="mailto:cartelera@edco.com">cartelera@edco.com</a></p>
+                    <p>Telefono: <a href="tel:+57601858585">+57601858585</a></p>
+                </address>
+            </div>
         </footer>
     </body>
 </html>

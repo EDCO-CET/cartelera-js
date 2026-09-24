@@ -1,3 +1,11 @@
+/* ==========================================================================
+   Cartelera de eventos - Hoja de estilos principal
+   Estrategia de layout:
+   - CSS Grid para layouts bidimensionales (página, columnas, tarjetas, formulario).
+   - Flexbox solo para alineaciones en una dimensión (header, nav, acciones de tarjeta).
+   ========================================================================== */
+
+/* Variables globales (design tokens) */
 :root {
   --primary-color: #2589C9;
   --secondary-color: #063E5F;
@@ -10,8 +18,9 @@
   --error-color: #ff6b6b;
   --space: 1rem;
   --max-width: 1200px;
+  --sidebar-width: 12.5rem;   /* ancho de cada columna lateral en el layout */
+  --header-offset: 6rem;      /* espacio que dejan los elementos sticky bajo el header */
 }
-
 
 /* Reset/Normalize */
 * {
@@ -27,20 +36,28 @@ html {
   color: var(--text-color);
 }
 
+/* --------------------------------------------------------------------------
+   Grid de página: header / contenido / footer
+   El body es un grid de una sola columna y tres filas. La fila central (1fr)
+   absorbe el espacio sobrante, de modo que el footer siempre queda al final
+   aunque haya poco contenido ("sticky footer").
+   -------------------------------------------------------------------------- */
 body {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  /* minmax(0, 1fr): la columna nunca crece más que el viewport aunque un hijo
+     tenga contenido ancho (evita scroll horizontal en móvil) */
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto; /* header | .layout | footer */
+  min-height: 100vh;
   font-family: 'Lato', sans-serif;
   font-weight: 400;
   font-style: normal;
-  gap: .5rem;
   background-color: var(--background-color);
-  color:  var(--text-color);
+  color: var(--text-color);
   line-height: 1.5;
 }
 
-
-h1,h2,h3 {
+h1, h2, h3 {
   color: var(--text-color);
 }
 
@@ -48,18 +65,26 @@ a {
   color: var(--accent-color);
 }
 
+/* --------------------------------------------------------------------------
+   Header (fila 1 del grid del body)
+   Flexbox es suficiente aquí: solo alineamos título y nav en una línea.
+   -------------------------------------------------------------------------- */
 .header {
   display: flex;
+  flex-wrap: wrap; /* en pantallas angostas el nav baja a una segunda línea */
   justify-content: space-between;
   align-items: center;
+  gap: .5rem 1rem;
   position: sticky;
   top: 0;
+  z-index: 10; /* que quede por encima de las tarjetas al hacer scroll */
   padding: 1rem;
   background-color: var(--background-color);
 }
 
 .nav-list {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   list-style: none;
 }
@@ -68,53 +93,100 @@ a {
   text-decoration: none;
 }
 
+/* --------------------------------------------------------------------------
+   Layout de contenido (fila 2 del grid del body): 3 columnas con áreas nombradas
+   
+   |  featured  |        main        |   info   |
+   
+   - minmax(0, 1fr) evita que la columna central crezca por contenido ancho
+     (por defecto 1fr equivale a minmax(auto, 1fr) y puede desbordar).
+   - align-items: start evita que los asides se estiren a toda la altura de la
+     fila; sin esto, position: sticky no tiene espacio para "pegarse".
+   -------------------------------------------------------------------------- */
 .layout {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--sidebar-width);
+  grid-template-areas: "featured main info";
+  column-gap: 1rem;
+  align-items: start;
+  width: 100%;
   max-width: var(--max-width);
-  gap: 1rem;
   margin: 0 auto;
+  padding: 0 1rem;
 }
 
+/* Cada hijo del layout se ubica por nombre de área, no por orden en el HTML */
 .main {
-  flex: 3 1 37.5rem;
+  grid-area: main;
 }
 
 .aside {
-  flex: 1 1 15rem;
   position: sticky;
-  top: 6rem;
+  top: var(--header-offset);
 }
 
+.aside--featured {
+  grid-area: featured;
+}
 
+.aside--info {
+  grid-area: info;
+}
 
+/* Tablet: el contenido principal ocupa todo el ancho y los asides bajan en 2 columnas */
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "main     main"
+      "featured info";
+    row-gap: 2rem;
+  }
 
+  /* En filas apiladas ya no tiene sentido el sticky */
+  .aside {
+    position: static;
+  }
+}
 
-#events{
+/* Móvil: una sola columna, en orden de lectura */
+@media (max-width: 600px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "main"
+      "featured"
+      "info";
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Sección de eventos: grid de tarjetas responsive sin media queries
+   repeat(auto-fit, minmax(...)) crea tantas columnas como quepan de mínimo
+   18rem y reparte el sobrante. min(18rem, 100%) evita desbordar en pantallas
+   más angostas que 18rem.
+   -------------------------------------------------------------------------- */
+#events {
   margin-bottom: 2rem;
 }
 
 .events-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
   gap: 1rem;
 }
 
-/* Card */
+/* Card: grid de 3 filas (imagen | cuerpo | acciones).
+   La fila central en 1fr empuja las acciones al fondo, así todas las tarjetas
+   de una misma fila alinean su botón aunque el texto tenga distinta longitud. */
 .card {
-  display:flex;
-  flex-direction: column;
-  flex: 1 1 20rem;
-  justify-content: space-between;
-  gap:.5rem;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: .5rem;
   border: 1px solid var(--border-color);
   border-radius: 4px;
-  margin-bottom: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden; 
+  overflow: hidden;
 }
 
 .card-image {
@@ -127,6 +199,7 @@ a {
   padding: 1rem;
 }
 
+/* Acciones: una sola línea, precio a la izquierda y botón a la derecha */
 .card-actions {
   padding: 1rem;
   display: flex;
@@ -139,29 +212,33 @@ a {
   font-size: 1.25rem;
 }
 
+/* --------------------------------------------------------------------------
+   Formulario de contacto
+   -------------------------------------------------------------------------- */
 #contact {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.form{
+.form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  width: 30rem;
+  width: min(30rem, 100%); /* nunca más ancho que su contenedor */
 }
 
 form input {
   height: 2rem;
 }
 
+/* Cada fieldset es un grid de campos: 2 columnas en desktop, 1 en móvil,
+   calculado automáticamente con auto-fit. */
 .form-group {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(12rem, 100%), 1fr));
+  gap: .75rem 1rem;
   padding: 1rem;
-  gap: .5rem;
   border: 1px solid var(--border-color);
   border-radius: 4px;
 }
@@ -171,21 +248,56 @@ form input {
   margin-bottom: .5rem;
 }
 
+/* Campo: etiqueta encima del input */
 .form-field {
   display: flex;
   flex-direction: column;
   gap: .25rem;
-  flex: 1 1 1rem;
 }
 
-.form-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: .5rem;
+/* Campos anchos (ej. textarea) ocupan todas las columnas del fieldset */
+.form-field--full {
+  grid-column: 1 / -1;
 }
 
+/* --------------------------------------------------------------------------
+   Sección demo "Grid"
+   - Columnas mixtas: fracciones (1fr, 2fr) y una fija de 150px.
+   - grid-auto-rows define la altura de las filas implícitas, en lugar de fijar
+     un height al contenedor, para que crezcan si el contenido lo necesita.
+   -------------------------------------------------------------------------- */
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 2fr 150px;
+  grid-auto-rows: minmax(150px, auto);
+  gap: 1rem;
+}
 
+.box {
+  padding: 1rem;
+  border-radius: 4px;
+  background-color: var(--text-color);
+  color: var(--background-color); /* contraste: fondo claro, texto oscuro */
+}
+
+/* --------------------------------------------------------------------------
+   Footer (fila 3 del grid del body)
+   Columnas automáticas: derechos y contacto lado a lado, apilados en móvil.
+   -------------------------------------------------------------------------- */
+.footer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  gap: 1rem;
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 2rem auto 0;
+  padding: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+/* --------------------------------------------------------------------------
+   Botones
+   -------------------------------------------------------------------------- */
 .btn {
   padding: .5rem 1rem;
   border: none;
