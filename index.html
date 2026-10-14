@@ -9,7 +9,8 @@
         <link rel="icon" href="favicon.svg" type="image/svg+xml">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet"> 
+        <script src="eventos.js" defer></script>
         <script src="script.js" defer></script>
     </head>
     <body>
@@ -60,93 +61,7 @@
                     <h2>Proximos eventos</h2>
                     <!-- Grid de tarjetas: columnas automáticas con repeat(auto-fit, minmax()).
                          Imágenes: img/jazz.jpg (original) y las demás de picsum.photos (fotos de Unsplash, uso libre) -->
-                    <div class="events-container">
-                        <!-- .card-media recorta el zoom de la imagen (overflow: hidden) y posiciona la etiqueta -->
-                        <article class="card">
-                            <div class="card-media">
-                                <img class="card-image" src="img/jazz.jpg" alt="Fila de saxofonistas tocando en un concierto">
-                                <span class="card-tag">Ver detalles</span>
-                            </div>
-                            <div class="card-body">
-                                <h3>Concierto de jazz</h3>
-                                <p>Big band en vivo en el Teatro Colón</p>
-                            </div>
-                            <div class="card-actions">
-                                <span class="card-price">$50.000</span>
-                                <button class="btn btn--accent">Comprar Ticket</button>
-                            </div>
-                        </article>
-                        <article class="card">
-                            <div class="card-media">
-                                <img class="card-image" src="img/festival.jpg" alt="Público con las manos arriba frente a un escenario iluminado">
-                                <span class="card-tag">Ver detalles</span>
-                            </div>
-                            <div class="card-body">
-                                <h3>Festival Indie Bogotá</h3>
-                                <p>Doce bandas, dos escenarios y food trucks</p>
-                            </div>
-                            <div class="card-actions">
-                                <span class="card-price">$120.000</span>
-                                <button class="btn btn--accent">Comprar Ticket</button>
-                            </div>
-                        </article>
-                        <article class="card">
-                            <div class="card-media">
-                                <img class="card-image" src="img/fotografia.jpg" alt="Cámara analógica antigua sobre una mesa">
-                                <span class="card-tag">Ver detalles</span>
-                            </div>
-                            <div class="card-body">
-                                <h3>Taller de fotografía</h3>
-                                <p>Fundamentos de luz y composición con cámara analógica</p>
-                            </div>
-                            <div class="card-actions">
-                                <span class="card-price">$80.000</span>
-                                <button class="btn btn--accent">Comprar Ticket</button>
-                            </div>
-                        </article>
-                        <article class="card">
-                            <div class="card-media">
-                                <img class="card-image" src="img/cocina.jpg" alt="Cebollas, hierbas y especias sobre una tabla de madera">
-                                <span class="card-tag">Ver detalles</span>
-                            </div>
-                            <div class="card-body">
-                                <h3>Feria gastronómica</h3>
-                                <p>Cocina local, mercado campesino y showcooking</p>
-                            </div>
-                            <div class="card-actions">
-                                <span class="card-price">Entrada libre</span>
-                                <button class="btn btn--accent">Comprar Ticket</button>
-                            </div>
-                        </article>
-                        <article class="card">
-                            <div class="card-media">
-                                <img class="card-image" src="img/tecnologia.jpg" alt="Portátil abierto junto a un cuaderno de notas">
-                                <span class="card-tag">Ver detalles</span>
-                            </div>
-                            <div class="card-body">
-                                <h3>Hackathon Frontend</h3>
-                                <p>48 horas para construir una app web en equipo</p>
-                            </div>
-                            <div class="card-actions">
-                                <span class="card-price">$30.000</span>
-                                <button class="btn btn--accent">Comprar Ticket</button>
-                            </div>
-                        </article>
-                        <article class="card">
-                            <div class="card-media">
-                                <img class="card-image" src="img/vinilos.jpg" alt="Aguja de un tocadiscos sobre un vinilo">
-                                <span class="card-tag">Ver detalles</span>
-                            </div>
-                            <div class="card-body">
-                                <h3>Noche de vinilos</h3>
-                                <p>Sesión de DJ con clásicos del soul y el funk</p>
-                            </div>
-                            <div class="card-actions">
-                                <span class="card-price">$25.000</span>
-                                <button class="btn btn--accent">Comprar Ticket</button>
-                            </div>
-                        </article>
-                    </div>
+                    <div class="events-container"></div>
                 </section>
                 <section id="aboutus" class="reveal">
                     <h2>Acerca de nosotros</h2>
@@ -213,6 +128,35 @@
                         <div class="box"></div>
                         <div class="box"></div>
                         <div class="box"></div>
+                    </div>
+                </section>
+                <section>
+                    <h2>Calculadora</h2>
+                    <div class="calculadora">
+                        <div id="pantalla">0</div>
+                        <div class="botones">
+                        <button class="button-calc numero">7</button>
+                        <button class="button-calc numero">8</button>
+                        <button class="button-calc numero">9</button>
+                        <button class="button-calc operador">+</button>
+
+                        <button class="button-calc numero">4</button>
+                        <button class="button-calc numero">5</button>
+                        <button class="button-calc numero">6</button>
+                        <button class="button-calc operador">-</button>
+
+                        <button class="button-calc numero">1</button>
+                        <button class="button-calc numero">2</button>
+                        <button class="button-calc numero">3</button>
+                        <button class="button-calc operador">*</button>
+
+                        <button class="button-calc numero">0</button>
+                        <button class="button-calc" id="decimal">.</button>
+                        <button class="button-calc" id="igual">=</button>
+                        <button class="button-calc operador">/</button>
+
+                        <button id="limpiar">C</button>
+                    </div>
                     </div>
                 </section>
             </main>

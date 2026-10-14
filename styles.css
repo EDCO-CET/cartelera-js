@@ -405,6 +405,14 @@ main[id] {
   overflow: hidden;
 }
 
+/* Texto de cupos dentro de la tarjeta */
+.card-stock {
+  display: block;
+  margin-top: .5rem;
+  font-size: .8125rem;
+  color: #9aa1b5;
+}
+
 .card-image {
   display: block;
   width: 100%;
@@ -794,6 +802,49 @@ form textarea:focus {
   opacity: 1;
   transform: none;
 }
+
+/* --------------------------------------------------------------------------
+   Calculadora
+   -------------------------------------------------------------------------- */
+
+.calculadora {
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #f8f9fa;
+}
+#pantalla {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  text-align: right;
+  font-size: 24px;
+  height: 40px;
+}
+.botones {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+.button-calc {
+  padding: 15px;
+  font-size: 18px;
+  cursor: pointer;
+}
+.button-calc:hover {
+  background-color: #eaeaea;
+}
+
+#limpiar {
+  background-color: #ff4444;
+  color: white;
+  grid-column: 1 / -1;
+}
+
+
+
 
 /* --------------------------------------------------------------------------
    Accesibilidad: movimiento reducido

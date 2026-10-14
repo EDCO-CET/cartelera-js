@@ -1,50 +1,91 @@
-/* ==========================================================================
-   Clase 8 - Reveal al hacer scroll con Intersection Observer
-   El CSS define los dos estados (.reveal y .reveal.is-visible);
-   este script solo decide CUÁNDO añadir la clase.
-   ========================================================================== */
 
-// Marca que JS está activo. Las reglas .js .reveal { opacity: 0 } solo aplican
-// con esta clase: si el script no carga, nada queda oculto.
-document.documentElement.classList.add('js');
 
-const elementos = document.querySelectorAll('.reveal');
+const contenedorEventos = document.querySelector('.events-container');
 
-const reducirMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-if (!('IntersectionObserver' in window) || reducirMovimiento) {
-  // Navegador antiguo o usuario que prefiere sin animaciones: mostrar todo ya
-  elementos.forEach((el) => el.classList.add('is-visible'));
-} else {
-  const observador = new IntersectionObserver(
-    (entradas, obs) => {
-      entradas.forEach((entrada) => {
-        if (entrada.isIntersecting) {
-          entrada.target.classList.add('is-visible');
-          obs.unobserve(entrada.target); // la animación de entrada ocurre una sola vez
-        }
-      });
-    },
-    { threshold: 0.15 } // se dispara cuando el 15% del elemento es visible
-  );
-
-  elementos.forEach((el) => observador.observe(el));
+const formatearPrecio = (precio) => {
+  if (precio <= 0){
+    return 'Entrada libre';
+  }
+  return '$' + precio.toLocaleString('es-CO');
 }
 
-/* --------------------------------------------------------------------------
-   Header: gradiente que cambia al hacer scroll (respaldo)
-   Si el navegador soporta animation-timeline: scroll(), el CSS ya lo hace
-   solo y aquí no se ejecuta nada. Si no, alternamos una clase con el scroll.
-   -------------------------------------------------------------------------- */
-const soportaScrollTimeline = CSS.supports('animation-timeline: scroll()');
-
-if (!soportaScrollTimeline) {
-  const header = document.querySelector('.header');
-
-  const actualizarHeader = () => {
-    header.classList.toggle('is-scrolled', window.scrollY > 40);
-  };
-
-  actualizarHeader(); // estado inicial (p. ej. al recargar a mitad de página)
-  window.addEventListener('scroll', actualizarHeader, { passive: true });
+const textoCupos = (cupos) => {
+  if (cupos === 0){
+    return 'Sin cupos';
+  } else if (cupos === 1) {
+    return 'Queda 1 cupo'
+  } else {
+    return `Quedan ${cupos} cupos`
+  }
 }
+
+const crearTarjeta = (evento) => {
+  const tarjeta = document.createElement('article');
+  tarjeta.className = 'card';
+  tarjeta.dataset.id = evento.id;
+
+  const media = document.createElement('div');
+  media.className = 'card-media';
+
+  const imagen = document.createElement('img');
+  imagen.className = 'card-image';
+  imagen.src = evento.imagen;
+  imagen.alt = evento.alt;
+
+  const etiqueta = document.createElement('span');
+  etiqueta.className = 'card-tag';
+  etiqueta.textContent = 'Ver detalles';
+
+  media.append(imagen, etiqueta);
+  tarjeta.append(media);
+
+  const cuerpo = document.createElement('div');
+  cuerpo.className = 'card-body';
+
+  const titulo = document.createElement('h3');
+  titulo.textContent = evento.titulo;
+
+  const description = document.createElement('p');
+  description.textContent = evento.descripcion;
+
+  const cupos = document.createElement('small');
+  cupos.className = 'card-stock';
+  cupos.textContent = textoCupos(evento.cupos);
+
+  cuerpo.append(titulo, description, cupos);
+  tarjeta.append(cuerpo);
+
+  const acciones = document.createElement('div');
+  acciones.className = 'card-actions';
+
+  const precio = document.createElement('span');
+  precio.className = 'card-price';
+  precio.textContent = formatearPrecio(evento.precio);
+
+  const boton = document.createElement('button');
+  boton.className = 'btn btn--accent';
+  boton.textContent = 'Comprar Ticket';
+
+  acciones.append(precio, boton);
+  tarjeta.append(acciones);
+  contenedorEventos.append(tarjeta);
+
+}
+
+const renderizarEventos = () => {
+  for (let evento of eventos) {
+    crearTarjeta(evento);
+  }
+}
+
+
+renderizarEventos();
+
+
+
+
+
+
+
+
+
