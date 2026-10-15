@@ -1,4 +1,6 @@
 
+const eventos = [];
+const eventosUrl = 'https://6acffa5d03feaa52b21efe53.mockapi.io/api/v1/eventos';
 
 const contenedorEventos = document.querySelector('.events-container');
 
@@ -73,13 +75,51 @@ const crearTarjeta = (evento) => {
 }
 
 const renderizarEventos = () => {
+  contenedorEventos.innerHTML = '';
   for (let evento of eventos) {
     crearTarjeta(evento);
   }
 }
 
+/* 
+  Muestra un mensaje en el contenedor de eventos
+  @param {string} texto - Texto del mensaje
+  @param {string} tipo - Tipo de mensaje (success, error, warning)
+  @returns {HTMLElement} - Elemento del mensaje
+*/
+const mostrarMensaje = (texto, tipo) => {
+  contenedorEventos.innerHTML = '';
+  const mensaje = document.createElement('p');
+  mensaje.textContent = texto;
+  mensaje.className = `estado estado--${tipo}`;
+  contenedorEventos.append(mensaje);
+  return mensaje;
+}
 
-renderizarEventos();
+
+const obtenerEventos = async () => {
+  try {
+    mostrarMensaje('Cargando eventos...', 'cargando');
+    const response = await fetch(eventosUrl);
+    const data = await response.json();
+    if(data.length === 0) {
+      mostrarMensaje('No se encontraron eventos', 'error');
+      return;
+    }
+    eventos.push(...data);
+    renderizarEventos();
+  } catch (error) {
+    console.error('Error al obtener los eventos:', error);
+    mostrarMensaje('Error al cargar los eventos, por favor intente de nuevo más tarde', 'error');
+  }
+}
+
+obtenerEventos();
+
+
+
+
+
 
 
 

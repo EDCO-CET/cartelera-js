@@ -843,6 +843,38 @@ form textarea:focus {
   grid-column: 1 / -1;
 }
 
+.estado {
+  grid-column: 1 / -1;            /* ocupa todo el ancho del grid de tarjetas */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space);
+  flex-wrap: wrap;
+  padding: calc(var(--space) * 2);
+  border: 1px dashed var(--border-color);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.estado--cargando::before {
+  content: '';
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: girar 800ms linear infinite;
+}
+
+.estado--error {
+  border-color: var(--error-color);
+  color: var(--error-color);
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
+
 
 
 
