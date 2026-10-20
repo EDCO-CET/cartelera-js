@@ -10,6 +10,9 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet"> 
+        <!-- Orden importa: api.js define las funciones que script.js usa.
+             defer respeta ese orden y espera a que el HTML esté listo. -->
+        <script src="api.js" defer></script>
         <script src="script.js" defer></script>
     </head>
     <body>
@@ -19,6 +22,8 @@
                 <ul class="nav-list">
                     <li><a href="#home">Inicio</a></li>
                     <li><a href="#events">Eventos</a></li>
+                    <li><a href="#admin">Administrar</a></li>
+                    <li><a href="#carrito">Carrito (<span id="carrito-contador">0</span>)</a></li>
                     <li><a href="#aboutus">Acerca de nosotros</a></li>
                 </ul>
             </nav>
@@ -60,7 +65,78 @@
                     <h2>Proximos eventos</h2>
                     <!-- Grid de tarjetas: columnas automáticas con repeat(auto-fit, minmax()).
                          Imágenes: img/jazz.jpg (original) y las demás de picsum.photos (fotos de Unsplash, uso libre) -->
-                    <div class="events-container"></div>
+                    <!-- Filtro: cada botón consulta la API con ?categoria=X.
+                         data-categoria="" (Todos) trae el listado completo. -->
+                    <div class="filtros" role="group" aria-label="Filtrar por categoría">
+                        <button type="button" class="filtro" data-categoria="" aria-pressed="true">Todos</button>
+                        <button type="button" class="filtro" data-categoria="Música" aria-pressed="false">Música</button>
+                        <button type="button" class="filtro" data-categoria="Taller" aria-pressed="false">Taller</button>
+                        <button type="button" class="filtro" data-categoria="Gastronomía" aria-pressed="false">Gastronomía</button>
+                        <button type="button" class="filtro" data-categoria="Tecnología" aria-pressed="false">Tecnología</button>
+                    </div>
+                    <div class="events-container" aria-live="polite"></div>
+                </section>
+                <!-- Administración: el mismo formulario crea (POST) o edita (PUT).
+                     El input oculto "id" decide cuál de los dos se usa. -->
+                <section id="admin">
+                    <h2>Administrar eventos</h2>
+                    <form class="form" id="form-evento">
+                        <input type="hidden" name="id">
+                        <fieldset class="form-group">
+                            <legend>Nuevo evento</legend>
+                            <div class="form-field">
+                                <label for="ev-titulo">Título</label>
+                                <input type="text" id="ev-titulo" name="titulo" minlength="3" maxlength="60" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="ev-categoria">Categoría</label>
+                                <select id="ev-categoria" name="categoria" required>
+                                    <option value="">Elige una categoría</option>
+                                    <option>Música</option>
+                                    <option>Taller</option>
+                                    <option>Gastronomía</option>
+                                    <option>Tecnología</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="ev-fecha">Fecha</label>
+                                <input type="text" id="ev-fecha" name="fecha" placeholder="Viernes 2 de octubre, 8 pm" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="ev-lugar">Lugar</label>
+                                <input type="text" id="ev-lugar" name="lugar" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="ev-precio">Precio (0 = entrada libre)</label>
+                                <input type="number" id="ev-precio" name="precio" min="0" step="500" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="ev-cupos">Cupos</label>
+                                <input type="number" id="ev-cupos" name="cupos" min="0" step="1" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="ev-imagen">Imagen (ruta o URL)</label>
+                                <input type="text" id="ev-imagen" name="imagen" placeholder="img/jazz.jpg" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="ev-alt">Texto alternativo</label>
+                                <input type="text" id="ev-alt" name="alt" required>
+                            </div>
+                            <div class="form-field form-field--full">
+                                <label for="ev-descripcion">Descripción</label>
+                                <textarea id="ev-descripcion" name="descripcion" rows="3" minlength="10" maxlength="140" required></textarea>
+                            </div>
+                            <div class="form-field form-field--check">
+                                <input type="checkbox" id="ev-destacado" name="destacado">
+                                <label for="ev-destacado">Evento destacado</label>
+                            </div>
+                        </fieldset>
+                        <p class="form-mensaje" role="status"></p>
+                        <div class="form-botones">
+                            <button class="btn btn--secondary form-cancelar" type="button" hidden>Cancelar edición</button>
+                            <button class="btn btn--accent form-submit" type="submit">Crear evento</button>
+                        </div>
+                    </form>
                 </section>
                 <section id="aboutus" class="reveal">
                     <h2>Acerca de nosotros</h2>
@@ -113,53 +189,22 @@
                     </form>
     
                 </section>
-                <section class="reveal">
-                    <h2>Grid</h2>
-                    <!-- Demo: grid explícito de 3 columnas (1fr 2fr 150px) con filas automáticas -->
-                    <div class="grid-container">
-                        <div class="box">
-                            <p>Box 1</p>
-                        </div>
-                        <div class="box">
-                            <p>Box 2</p>
-                        </div>
-                        <div class="box"></div>
-                        <div class="box"></div>
-                        <div class="box"></div>
-                        <div class="box"></div>
-                    </div>
-                </section>
-                <section>
-                    <h2>Calculadora</h2>
-                    <div class="calculadora">
-                        <div id="pantalla">0</div>
-                        <div class="botones">
-                        <button class="button-calc numero">7</button>
-                        <button class="button-calc numero">8</button>
-                        <button class="button-calc numero">9</button>
-                        <button class="button-calc operador">+</button>
-
-                        <button class="button-calc numero">4</button>
-                        <button class="button-calc numero">5</button>
-                        <button class="button-calc numero">6</button>
-                        <button class="button-calc operador">-</button>
-
-                        <button class="button-calc numero">1</button>
-                        <button class="button-calc numero">2</button>
-                        <button class="button-calc numero">3</button>
-                        <button class="button-calc operador">*</button>
-
-                        <button class="button-calc numero">0</button>
-                        <button class="button-calc" id="decimal">.</button>
-                        <button class="button-calc" id="igual">=</button>
-                        <button class="button-calc operador">/</button>
-
-                        <button id="limpiar">C</button>
-                    </div>
-                    </div>
-                </section>
             </main>
             <aside class="aside aside--info">
+                <!-- Carrito: se guarda en localStorage y se envía con POST /pedidos -->
+                <section id="carrito" class="carrito" aria-labelledby="carrito-titulo">
+                    <h2 id="carrito-titulo">Tu carrito</h2>
+                    <ul class="carrito-lista"></ul>
+                    <p class="carrito-total">Total: <strong id="carrito-total">$0</strong></p>
+                    <form id="form-pedido" class="carrito-form">
+                        <label for="cliente">Nombre</label>
+                        <input type="text" id="cliente" name="cliente" minlength="3" autocomplete="name" required>
+                        <label for="cliente-email">Correo electrónico</label>
+                        <input type="email" id="cliente-email" name="email" autocomplete="email" required>
+                        <button class="btn btn--accent" type="submit">Finalizar compra</button>
+                    </form>
+                    <p id="pedido-mensaje" class="form-mensaje" role="status"></p>
+                </section>
                 <h2>Info util</h2>
                 <section>
                     <h3>Horarios</h3>
@@ -178,5 +223,14 @@
                 </address>
             </div>
         </footer>
+        <!-- Detalle: <dialog> nativo. showModal() lo abre desde script.js;
+             el form method="dialog" lo cierra sin JavaScript. -->
+        <dialog id="detalle" class="detalle" aria-labelledby="detalle-titulo">
+            <form method="dialog">
+                <button class="detalle-cerrar" aria-label="Cerrar detalle">×</button>
+            </form>
+            <div class="detalle-contenido"></div>
+        </dialog>
+        <p id="aviso" class="aviso" role="status"></p>
     </body>
 </html>

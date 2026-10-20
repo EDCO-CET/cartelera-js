@@ -878,6 +878,266 @@ form textarea:focus {
 
 
 
+/* ==========================================================================
+   Taller 2: filtro, administración, detalle y carrito
+   ========================================================================== */
+
+/* Filtro por categoría: aria-pressed marca el botón activo (sin clases extra) */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-bottom: 1rem;
+}
+
+.filtro {
+  padding: .375rem 1rem;
+  font: inherit;
+  color: var(--text-color);
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.filtro[aria-pressed="true"] {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.filtro:disabled {
+  cursor: progress;
+  opacity: .6;
+}
+
+/* Botones deshabilitados durante una petición: se ven y se sienten inactivos */
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: .5;
+  transform: none;
+}
+
+.btn--danger {
+  background-color: transparent;
+  color: var(--error-color);
+  border: 1px solid var(--error-color);
+}
+
+.btn--mini {
+  padding: 0 .5rem;
+  font: inherit;
+  color: var(--text-color);
+  background-color: var(--border-color);
+}
+
+/* La tarjeta entera abre el detalle */
+.card {
+  cursor: pointer;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.card:nth-child(n + 7) { animation-delay: .7s; }
+
+.card-admin {
+  display: flex;
+  gap: .5rem;
+  padding: 0 1rem 1rem;
+}
+
+.card-admin .btn {
+  flex: 1;
+  font: inherit;
+  font-size: .875rem;
+}
+
+.card-admin .btn--secondary {
+  color: var(--text-color);
+}
+
+.estado--vacio {
+  color: #9aa1b5;
+}
+
+/* Formulario de administración */
+#admin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;  /* igual que #contact */
+}
+
+form select {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: .625rem .875rem;
+  font: inherit;
+  color: var(--text-color);
+  background-color: #161a24;
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  color-scheme: dark;
+}
+
+.form-field--check {
+  flex-direction: row;
+  align-items: center;
+}
+
+.form-field--check input {
+  width: auto;
+  min-height: auto;
+}
+
+.form-botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.form-mensaje:empty {
+  display: none;
+}
+
+.form-mensaje--ok {
+  color: var(--success-color);
+}
+
+.form-mensaje--error {
+  color: var(--error-color);
+}
+
+/* El aside es sticky: si el carrito crece, hace scroll propio en vez de cortarse */
+.aside--info {
+  max-height: calc(100vh - var(--header-offset));
+  overflow-y: auto;
+}
+
+@media (max-width: 900px) {
+  .aside--info {
+    max-height: none;
+  }
+}
+
+/* Carrito (aside derecho) */
+.carrito {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+.carrito-lista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+.carrito-item {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+  padding-bottom: .75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.carrito-controles {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.carrito-subtotal {
+  margin-left: auto;
+  font-weight: bold;
+}
+
+.carrito-vacio {
+  color: #9aa1b5;
+}
+
+.carrito-form {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.carrito-form input {
+  min-height: 2.5rem;
+}
+
+/* Modal de detalle: <dialog> trae el foco atrapado y Esc para cerrar */
+.detalle {
+  width: min(32rem, calc(100% - 2rem));
+  margin: auto;
+  padding: 1.5rem;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.detalle::backdrop {
+  background: rgba(0, 0, 0, .7);
+}
+
+.detalle-contenido {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.detalle-imagen {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.detalle-cerrar {
+  float: right;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--text-color);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Aviso flotante: entra desde abajo con transform (sin reflow) */
+.aviso {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  z-index: 10;
+  max-width: calc(100% - 2rem);
+  padding: .75rem 1.25rem;
+  border-radius: 6px;
+  background-color: #161a24;
+  border: 1px solid var(--success-color);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 1rem);
+  transition:
+    opacity var(--duration-base) ease,
+    transform var(--duration-base) var(--ease-out);
+}
+
+.aviso--error {
+  border-color: var(--error-color);
+}
+
+.aviso.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
 /* --------------------------------------------------------------------------
    Accesibilidad: movimiento reducido
    Usuarios con trastornos vestibulares activan esta preferencia en el SO.
